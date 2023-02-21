@@ -2,6 +2,7 @@ const socket = io();
 
 let user;
 const chatBox = document.querySelector("#chatBox");
+chatBox.focus();
 
 Swal.fire({
   title: "Identificate",
@@ -23,6 +24,7 @@ chatBox.addEventListener("keyup", (e) => {
         message: chatBox.value,
       });
       chatBox.value = "";
+      chatBox.focus();
     }
   }
 });
@@ -32,7 +34,14 @@ socket.on("messageLogs", (data) => {
   let log = document.querySelector("#messageLogs");
   let messages = "";
   data.forEach((message) => {
-    messages += `${message.user}>>> ${message.message}<br/>`;
+    messages += `
+  <div class="card mb-3">
+    <div class="card-body">
+      <h5 class="card-title">${message.user}</h5>
+      <p class="card-text">${message.message}</p>
+      <p class="card-text text-muted text-end">${message.time}<p/>
+    </div>
+  </div>`;
   });
   log.innerHTML = messages;
 });
@@ -40,7 +49,7 @@ socket.on("messageLogs", (data) => {
 socket.on("newUserConnected", (data) => {
   if (!user) return;
   Swal.fire({
-    Toast: true,
+    toast: true,
     position: "top-end",
     showConfirmButton: false,
     timer: 3000,

@@ -3,6 +3,7 @@ import handlebars from "express-handlebars";
 import { __dirname } from "./utils.js";
 import viewsRouter from "./routes/views.router.js";
 import { Server } from "socket.io";
+import moment from "moment";
 
 const app = express();
 app.use(express.static(`${__dirname}/public`));
@@ -21,9 +22,11 @@ const server = app.listen(8080, () => console.log("listen on port 8080"));
 const io = new Server(server);
 
 const messages = [];
+console.log(messages);
 
 io.on("connection", (socket) => {
   socket.on("message", (data) => {
+    data.time = moment().format(`HH:mm:ss`);
     messages.push(data);
     io.emit("messageLogs", messages);
   });
